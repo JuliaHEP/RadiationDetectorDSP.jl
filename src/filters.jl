@@ -11,15 +11,29 @@ end
 function cr_filter(RC::Real)
     T = float(typeof(RC))
     α = RC / (RC + 1)
-    # Biquad(T(α), T(-α), T(0), T(-α), T(0))
     Biquad(T(α), T(-α), T(0), T(-α), T(0))
+end
+
+
+# TODO:
+function inv_cr_filter(RC::Real)
+    T = float(typeof(RC))
+    α = 1 / (1 + RC)
+    Biquad(T(1), T(α - 1), T(0), T(-1), T(0)) #?
+end
+
+
+function expdecay_filter(RC::Real)
+    T = float(typeof(RC))
+    α = RC / (RC + 1)
+    Biquad(T(1), T(-1), T(0), T(-α), T(0))
 end
 
 
 function inv_expdecay_filter(RC::Real)
     T = float(typeof(RC))
     α = 1 / (1 + RC)
-    # α = 1 - exp(-1 / RC)
+    # α = 1 - exp(-1 / RC) # ?
     Biquad(T(1), T(α - 1), T(0), T(-1), T(0))
 end
 
