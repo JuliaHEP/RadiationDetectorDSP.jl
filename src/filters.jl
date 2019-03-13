@@ -15,25 +15,24 @@ function cr_filter(RC::Real)
 end
 
 
-# TODO:
 function inv_cr_filter(RC::Real)
     T = float(typeof(RC))
     α = 1 / (1 + RC)
-    Biquad(T(1), T(α - 1), T(0), T(-1), T(0)) #?
+    k = 1 + 1/RC
+    Biquad(T(k), T(k * (α - 1)), T(0), T(-1), T(0))
 end
 
 
-function expdecay_filter(RC::Real)
+function crmod_filter(RC::Real)
     T = float(typeof(RC))
     α = RC / (RC + 1)
     Biquad(T(1), T(-1), T(0), T(-α), T(0))
 end
 
 
-function inv_expdecay_filter(RC::Real)
+function inv_crmod_filter(RC::Real)
     T = float(typeof(RC))
     α = 1 / (1 + RC)
-    # α = 1 - exp(-1 / RC) # ?
     Biquad(T(1), T(α - 1), T(0), T(-1), T(0))
 end
 
@@ -57,7 +56,7 @@ function integrator_cr_filter(gain::Real, RC::Real)
 end
 
 
-function integrator_expdecay_filter(gain::Real, RC::Real)
+function integrator_crmod_filter(gain::Real, RC::Real)
     T = float(promote_type(typeof(gain), typeof(RC)))
     α = 1 / (1 + RC)
     Biquad(T(gain), T(0), T(0), T(α - 1), T(0))
@@ -68,5 +67,5 @@ function simple_csa_response_filter(τ_rise::Real, τ_decay::Real, gain::Real = 
     # TODO: Use a single biquad filter
 
     T = float(promote_type(promote_type(typeof(τ_rise), typeof(τ_decay)), typeof(gain)))
-    rc_filter(T(τ_rise)) * integrator_expdecay_filter(T(gain), T(τ_decay))
+    rc_filter(T(τ_rise)) * integrator_cr_filter(T(gain), T(τ_decay))
 end
