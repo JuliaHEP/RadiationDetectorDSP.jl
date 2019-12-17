@@ -1,8 +1,8 @@
 # This file is a part of RadiationDetectorDSP.jl, licensed under the MIT License (MIT).
 
-import Test
-Test.@testset "Package RadiationDetectorDSP" begin
+using RadiationDetectorDSP
+using Test
 
-include("test_biquad_filter.jl")
 
+@testset "biquad_filter" begin
 end # testset
