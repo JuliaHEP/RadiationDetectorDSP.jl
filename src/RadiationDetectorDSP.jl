@@ -22,7 +22,12 @@ using TypedTables
 using UnsafeArrays
 
 include("samples.jl")
-include("filters.jl")
+include("rdspfilter.jl")
+include("iir_filter.jl")
+include("fir_filter.jl")
+include("biquad_filter.jl")
+include("trapezoidal_filter.jl")
+include("dspjl_filters.jl")
 include("generators.jl")
 
 end # module
