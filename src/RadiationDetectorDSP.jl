@@ -21,6 +21,8 @@ using StatsBase
 using TypedTables
 using UnsafeArrays
 
-# package code goes here
+include("samples.jl")
+include("filters.jl")
+include("generators.jl")
 
 end # module
