@@ -44,8 +44,6 @@ filterdef(fi::BiquadFilterInst) = BiquadFilterDef(fi.coeffs.b, fi.coeffs.a)
     X::Vector{<:Real},
     s_init::BQState{T} = (zero(T), zero(T))
 ) where {T<:Real}
-
-
     U = promote_type(promote_type(eltype(X), eltype(Y)), T)
     a1, a2 = map(U, coeffs.a)
     neg_a1, neg_a2 = -a1, -a2
