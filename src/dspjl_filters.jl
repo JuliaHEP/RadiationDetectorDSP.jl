@@ -67,5 +67,5 @@ function dspjl_simple_csa_response_filter(τ_rise::Real, τ_decay::Real, gain::R
     # TODO: Use a single biquad filter
 
     T = float(promote_type(promote_type(typeof(τ_rise), typeof(τ_decay)), typeof(gain)))
-    rc_filter(T(τ_rise)) * integrator_cr_filter(T(gain), T(τ_decay))
+    dspjl_rc_filter(T(τ_rise)) * dspjl_integrator_cr_filter(T(gain), T(τ_decay))
 end

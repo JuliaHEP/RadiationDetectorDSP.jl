@@ -41,10 +41,10 @@ function filterinst end
 
 function filterinst(
     fd::RDSPFilterDefinition,
-    input::AbstractVector{Tin},
-    output::AbstractVector{Tout}
-)
-    U = promote_type(dspfloattype(Tin), dspfloattype(Tout))
+    input::AbstractVector{TIn},
+    output::AbstractVector{TOut}
+) where {TIn, TOut}
+    U = promote_type(dspfloattype(TIn), dspfloattype(TOut))
     filterinst(fd, U)
 end
 

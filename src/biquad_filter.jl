@@ -6,12 +6,12 @@
 
 Defines a biquad filter.
 """
-struct BiquadFilter <: RDSPFilterDefinition
+struct BiquadFilterDef <: RDSPFilterDefinition
     b::NTuple{3,Float64}
     a::NTuple{2,Float64}
 end
 
-export BiquadFilter
+export BiquadFilterDef
 
 
 struct BiquadCoeffs{T<:Real}
@@ -28,7 +28,7 @@ struct BiquadFilterInst{T<:Real} <: RDSPFilterInstance
 end
 
 
-function filterinst(fd::BiquadFilter, ::Type{T}) where {T<:Real}
+function filterinst(fd::BiquadFilterDef, ::Type{T}) where {T<:Real}
     BiquadFilterInst(
         BiquadCoeffs{T}(fd.b, fd.a),
         BQState{U}(0, 0)
@@ -36,14 +36,6 @@ function filterinst(fd::BiquadFilter, ::Type{T}) where {T<:Real}
 end
 
 filterdef(fi::BiquadFilterInst) = BiquadFilterDef(fi.coeffs.b, fi.coeffs.a)
-
-
-struct BiquadCoeffs{T<:Real}
-    b::NTuple{3,T}
-    a::NTuple{2,T}
-end
-
-const BQState{T<:Real} = NTuple{2,T}
 
 
 @inline function fastbqfilt2!(
