@@ -4,21 +4,27 @@ __precompile__(true)
 
 module RadiationDetectorDSP
 
+using LinearAlgebra
+using Random
+using Statistics
+
+using Adapt
 using ArgCheck
 using ArraysOfArrays
-using Distributions
 using DSP
+using Distributions
+using DocStringExtensions
 using ElasticArrays
-using LinearAlgebra
-using ParallelProcessingTools
+using FFTW
+using GPUArrays
 using Parameters
 using RadiationDetectorSignals
-using Random
 using RecipesBase
+using SIMD
 using StaticArrays
-using Statistics
 using StatsBase
 using TypedTables
+using Unitful
 
 # package code goes here
 
