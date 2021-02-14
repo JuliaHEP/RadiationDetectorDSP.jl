@@ -1,14 +1,64 @@
 # This file is a part of RadiationDetectorDSP.jl, licensed under the MIT License (MIT).
 
 
-function rc_filter(RC::Real)
-    T = float(typeof(RC))
+"""
+    abstract type AbstractRadIIRFilter
+
+Abstract type for IIR filters
+"""
+abstract type AbstractRadIIRFilter
+export AbstractRadIIRFilter
+
+
+
+"""
+    abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity}
+
+Abstract type for IIR filters that can be expressed as a biquad filter.
+"""
+abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity}
+export AbstractBiquadCompatibleFilter
+
+
+function DSP.Biquad(flt::AbstractBiquadCompatibleFilter{T}) where {T<:Real}
+    U = float(T)
+    DSP.Biquad{U}(flt)
+end
+
+
+
+"""
+    struct RCFilter{T<:Real} <: AbstractAbstractBiquadCompatibleFilterSamplingAlgorithm
+
+A simple RC-filter.
+
+Constructors:
+
+* ```$(FUNCTIONNAME)(fields...)```
+
+Fields:
+
+$(TYPEDFIELDS)
+"""
+struct RCFilter{T<:RealQuantity} <: AbstractBiquadCompatibleFilter{T}
+    rc::Real
+end
+
+export RCFilter
+
+function DSP.Biquad{T}(flt::RCFilter) where {T<:Real}
+    rc = T(flt.RC)
     α = 1 / (1 + RC)
     Biquad(T(α), T(0), T(0), T(α - 1), T(0))
 end
 
 
+
+
+
+
 function cr_filter(RC::Real)
+    rc = FLT.
     T = float(typeof(RC))
     α = RC / (RC + 1)
     Biquad(T(α), T(-α), T(0), T(-α), T(0))
