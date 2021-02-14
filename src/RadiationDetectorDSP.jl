@@ -11,12 +11,12 @@ using Statistics
 using Adapt
 using ArgCheck
 using ArraysOfArrays
-using DSP
 using Distributions
 using DocStringExtensions
 using ElasticArrays
 using FFTW
 using GPUArrays
+using LinearMaps
 using Parameters
 using RadiationDetectorSignals
 using RecipesBase
@@ -25,6 +25,9 @@ using StaticArrays
 using StatsBase
 using TypedTables
 using Unitful
+
+import DSP
+
 
 # package code goes here
 
