@@ -22,7 +22,15 @@ const RealQuantity = MaybeWithUnits{<:Real}
 
 A vector of signal samples.
 """
-const AbstractSamples{T<:Real} = AbstractVector{T}
+const AbstractSamples{T<:RealQuantity} = AbstractVector{T}
+
+
+"""
+    const ArrayOfSimilarSamples{T<:RealQuantity} = ArrayOfSimilarVectors{T}
+
+An array of similar sample vectors.
+"""
+const ArrayOfSimilarSamples{T<:RealQuantity} = ArrayOfSimilarVectors{T}
 
 
 dspfloattype(::Type{T}) where {T} = float(T)
