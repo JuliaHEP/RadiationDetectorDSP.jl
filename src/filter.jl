@@ -8,3 +8,9 @@ Abstract type for linear filters.
 """
 abstract type AbstractRadFilter
 export AbstractRadFilter
+
+
+"""
+   output_time_axis(flt::AbstractRadFilter) 
+"""
+function output_time_axis(flt::AbstractRadFilter) end
