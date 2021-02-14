@@ -4,7 +4,7 @@
 """
     abstract type AbstractRadIIRFilter
 
-Abstract type for IIR filters
+Abstract type for IIR filters.
 """
 abstract type AbstractRadIIRFilter
 export AbstractRadIIRFilter
@@ -15,10 +15,15 @@ export AbstractRadIIRFilter
     abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity}
 
 Abstract type for IIR filters that can be expressed as a biquad filter.
+
+Conversions to DSP.jl:
+
+* `DSP.Biquad(flt::AbstractBiquadCompatibleFilter)`
 """
 abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity}
 export AbstractBiquadCompatibleFilter
 
+DSP.FilterCoefficients(flt::AbstractBiquadCompatibleFilter) = DSP.Biquad(flt)
 
 function DSP.Biquad(flt::AbstractBiquadCompatibleFilter{T}) where {T<:Real}
     U = float(T)
@@ -26,9 +31,13 @@ function DSP.Biquad(flt::AbstractBiquadCompatibleFilter{T}) where {T<:Real}
 end
 
 
+# For testing:
+coeffs_b_a(f::Biquad) = (SVec(f.b0, f.b1, f.b2), SVec(one(f.a1), f.a1, f.a2))
+
+
 
 """
-    struct RCFilter{T<:Real} <: AbstractAbstractBiquadCompatibleFilterSamplingAlgorithm
+    struct RCFilter{T<:Real} <: AbstractBiquadCompatibleFilter
 
 A simple RC-filter.
 
@@ -41,6 +50,7 @@ Fields:
 $(TYPEDFIELDS)
 """
 struct RCFilter{T<:RealQuantity} <: AbstractBiquadCompatibleFilter{T}
+    "RC time constant"
     rc::Real
 end
 
@@ -54,23 +64,68 @@ end
 
 
 
+"""
+    struct CRFilter{T<:Real} <: AbstractBiquadCompatibleFilter
 
+A simple CR-filter.
 
+Constructors:
 
-function cr_filter(RC::Real)
-    rc = FLT.
-    T = float(typeof(RC))
-    α = RC / (RC + 1)
-    Biquad(T(α), T(-α), T(0), T(-α), T(0))
+* ```$(FUNCTIONNAME)(fields...)```
+
+Fields:
+
+$(TYPEDFIELDS)
+"""
+struct CRFilter{T<:RealQuantity} <: AbstractBiquadCompatibleFilter{T}
+    "CR time constant"
+    cr::Real
+end
+
+export CRFilter
+
+Base.inv(flt::CRFilter) = InvCRFilter(flt.cr)
+
+function DSP.Biquad{T}(flt::CRFilter) where {T<:Real}
+    CR = T(flt.cr)
+    α = CR / (CR + 1)
+    DSP.Biquad(T(α), T(-α), T(0), T(-α), T(0))
 end
 
 
-function inv_cr_filter(RC::Real)
-    T = float(typeof(RC))
-    α = 1 / (1 + RC)
-    k = 1 + 1/RC
+
+"""
+    struct InvCRFilter{T<:Real} <: AbstractBiquadCompatibleFilter
+
+Inverse of [`CRFilter`](@ref).
+
+Constructors:
+
+* ```$(FUNCTIONNAME)(fields...)```
+
+Fields:
+
+$(TYPEDFIELDS)
+"""
+struct InvCRFilter{T<:RealQuantity} <: AbstractBiquadCompatibleFilter{T}
+    "CR time constant"
+    cr::Real
+end
+
+export InvCRFilter
+
+Base.inv(flt::InvCRFilter) = CRFilter(flt.cr)
+
+function DSP.Biquad{T}(flt::InvCRFilter) where {T<:Real}
+    CR = T(flt.cr)
+    α = inv(1 + CR)
+    k = 1 + inv(CR)
     Biquad(T(k), T(k * (α - 1)), T(0), T(-1), T(0))
 end
+
+
+
+
 
 
 function crmod_filter(RC::Real)
