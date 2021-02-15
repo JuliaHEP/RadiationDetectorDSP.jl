@@ -2,6 +2,27 @@
 
 
 """
+    abstract type AbstractRadFIRFilter <: AbstractRadLinearFilter
+
+Abstract type for FIR filters.
+"""
+abstract type AbstractRadFIRFilter <: AbstractRadLinearFilter end
+export AbstractRadFIRFilter
+
+
+
+# ToDo:
+# GenericTapFilter(...)
+# Resample(...)
+# CropFilter(...)
+# SavitkzyGolayFilter(...)
+# ...
+
+
+
+# ToDo:
+#=
+"""
     trapezoidal_charge_filter!(samples::AbstractVector{<:Real}, navg::Integer, ngap::Integer)
 
 Apply a trapeziodal charge filter to `samples` with avarageing time `navg`
@@ -56,5 +77,4 @@ function trapezoidal_charge_filter!(samples::AbstractVector{<:Real}, navg::Integ
 
     samples
 end
-
-export trapezoidal_charge_filter!
+=#

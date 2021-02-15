@@ -2,17 +2,17 @@
 
 
 """
-    abstract type AbstractRadIIRFilter
+    abstract type AbstractRadIIRFilter <: AbstractRadLinearFilter
 
 Abstract type for IIR filters.
 """
-abstract type AbstractRadIIRFilter
+abstract type AbstractRadIIRFilter <: AbstractRadLinearFilter end
 export AbstractRadIIRFilter
 
 
 
 """
-    abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity}
+    abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity} <: AbstractRadIIRFilter
 
 Abstract type for IIR filters that can be expressed as a biquad filter.
 
@@ -20,19 +20,56 @@ Conversions to DSP.jl:
 
 * `DSP.Biquad(flt::AbstractBiquadCompatibleFilter)`
 """
-abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity}
+abstract type AbstractBiquadCompatibleFilter{T<:RealQuantity} <: AbstractRadIIRFilter end
 export AbstractBiquadCompatibleFilter
 
-DSP.FilterCoefficients(flt::AbstractBiquadCompatibleFilter) = DSP.Biquad(flt)
+
+DSP.Biquad{T}(flt::AbstractBiquadCompatibleFilter) where {T<:Real} = DSP.Biquad{T}(BiquadFilter(flt))
 
 function DSP.Biquad(flt::AbstractBiquadCompatibleFilter{T}) where {T<:Real}
     U = float(T)
     DSP.Biquad{U}(flt)
 end
 
+DSP.FilterCoefficients(flt::AbstractBiquadCompatibleFilter) = DSP.Biquad(flt)
+
+
+
+"""
+    struct BiquadFilter{T<:Real} <: AbstractBiquadCompatibleFilter
+
+A biquad filter.
+
+Constructors:
+
+* ```$(FUNCTIONNAME)(fields...)```
+
+Fields:
+
+$(TYPEDFIELDS)
+"""
+struct BiquadFilter{T<:RealQuantity} <: AbstractBiquadCompatibleFilter{T}
+    b0::T
+    b1::T
+    b2::T
+
+    a1::T
+    a2::T
+end
+
+export BiquadFilter
+
+BiquadFilter(b::NTuple(3,T), a::NTuple(2,T)) where {T<:RealQuantity} = BiquadFilter{T}(b..., a...)
+
+
+function DSP.Biquad{T}(flt::BiquadFilter) where {T<:Real}
+    DSP.Biquad(T(flt.b0), T(flt.b1), T(flt.b2), T(flt.a1), T(flt.a2))
+end
+
 
 # For testing:
-coeffs_b_a(f::Biquad) = (SVec(f.b0, f.b1, f.b2), SVec(one(f.a1), f.a1, f.a2))
+coeffs_b_a(f::BiquadFilter) = (SVec(f.b0, f.b1, f.b2), SVec(one(f.a1), f.a1, f.a2))
+coeffs_b_a(f::DSP.Biquad) = (SVec(f.b0, f.b1, f.b2), SVec(one(f.a1), f.a1, f.a2))
 
 
 
@@ -56,10 +93,11 @@ end
 
 export RCFilter
 
-function DSP.Biquad{T}(flt::RCFilter) where {T<:Real}
-    rc = T(flt.RC)
+function BiquadFilter(flt::RCFilter)
+    RC = float(flt.RC)
+    T = typeof(RC)
     α = 1 / (1 + RC)
-    Biquad(T(α), T(0), T(0), T(α - 1), T(0))
+    BiquadFilter((α, 0, 0), (α - 1, 0))
 end
 
 
@@ -86,10 +124,10 @@ export CRFilter
 
 Base.inv(flt::CRFilter) = InvCRFilter(flt.cr)
 
-function DSP.Biquad{T}(flt::CRFilter) where {T<:Real}
-    CR = T(flt.cr)
+function BiquadFilter(flt::CRFilter)
+    CR = float(flt.cr)
     α = CR / (CR + 1)
-    DSP.Biquad(T(α), T(-α), T(0), T(-α), T(0))
+    BiquadFilter((α, -α, 0), (-α, 0))
 end
 
 
@@ -116,18 +154,19 @@ export InvCRFilter
 
 Base.inv(flt::InvCRFilter) = CRFilter(flt.cr)
 
-function DSP.Biquad{T}(flt::InvCRFilter) where {T<:Real}
-    CR = T(flt.cr)
+function BiquadFilter(flt::InvCRFilter)
+    CR = float(flt.cr)
     α = inv(1 + CR)
     k = 1 + inv(CR)
-    Biquad(T(k), T(k * (α - 1)), T(0), T(-1), T(0))
+    Biquad((k, k * (α - 1), 0), (-1, 0))
 end
 
 
 
 
+# ToDo:
 
-
+#=
 function crmod_filter(RC::Real)
     T = float(typeof(RC))
     α = RC / (RC + 1)
@@ -174,3 +213,4 @@ function simple_csa_response_filter(τ_rise::Real, τ_decay::Real, gain::Real = 
     T = float(promote_type(promote_type(typeof(τ_rise), typeof(τ_decay)), typeof(gain)))
     rc_filter(T(τ_rise)) * integrator_cr_filter(T(gain), T(τ_decay))
 end
+=#

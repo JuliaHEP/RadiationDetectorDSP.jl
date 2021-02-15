@@ -2,11 +2,11 @@
 
 
 """
-    abstract type AbstractRadLinearFilter <: AbstractRadFilter
+    abstract type AbstractRadLinearFilter <: AbstractRadSigFilter
 
-Abstract type for linear filters.
+Abstract type for linear signal filters.
 """
-abstract type AbstractRadLinearFilter <: AbstractRadFilter
+abstract type AbstractRadLinearFilter <: AbstractRadSigFilter end
 export AbstractRadLinearFilter
 
 
