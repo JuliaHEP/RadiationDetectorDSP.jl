@@ -47,7 +47,7 @@ LinearMaps.LinearMap{T}(flt::AbstractRadLinearFilter, time::Range) where {T<:Rea
 
 
 # ToDo: Allow non-square filter matrices:
-Base.size(A::FilterLinearMap) = (length(output_time_axis(A.flt, A.time)), length(A.time))
+Base.size(A::FilterLinearMap) = (length(flt_output_time_axis(A.flt, A.time)), length(A.time))
 
 # LinearAlgebra.issymmetric(A::FilterLinearMap) = false
 # LinearAlgebra.ishermitian(A::FilterLinearMap) = false
