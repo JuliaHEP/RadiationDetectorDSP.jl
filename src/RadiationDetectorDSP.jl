@@ -11,6 +11,7 @@ using Statistics
 using Adapt
 using ArgCheck
 using ArraysOfArrays
+using CompositionsBase
 using Distributions
 using DocStringExtensions
 using ElasticArrays
