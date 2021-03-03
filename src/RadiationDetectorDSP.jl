@@ -16,6 +16,7 @@ using Distributions
 using DocStringExtensions
 using ElasticArrays
 using FFTW
+using FillArrays
 using GPUArrays
 using LinearMaps
 using Parameters
@@ -27,6 +28,7 @@ using StatsBase
 using TypedTables
 using Unitful
 
+import ChainRulesCore
 import DSP
 
 
