@@ -11,6 +11,10 @@ export AbstractRadLinearFilter
 
 
 
+# ToDo: RadLinearFilterChain and RadLinearFilterChainInstance
+
+
+
 """
     FilterLinearMap{T} <: LinearMaps.LinearMap{T}
 
