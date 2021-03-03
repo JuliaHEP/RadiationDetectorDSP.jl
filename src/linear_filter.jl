@@ -2,11 +2,11 @@
 
 
 """
-    abstract type AbstractRadLinearFilter <: AbstractRadSigFilter
+    const AbstractRadLinearFilter = AbstractRadSigFilter{LinearFiltering}
 
-Abstract type for linear signal filters.
+Convenience type alias, abstract linear filter.
 """
-abstract type AbstractRadLinearFilter <: AbstractRadSigFilter end
+const AbstractRadLinearFilter = AbstractRadSigFilter{LinearFiltering}
 export AbstractRadLinearFilter
 
 
