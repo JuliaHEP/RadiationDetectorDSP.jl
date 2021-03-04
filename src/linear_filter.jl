@@ -10,39 +10,40 @@ const AbstractRadLinearFilter = AbstractRadSigFilter{LinearFiltering}
 export AbstractRadLinearFilter
 
 
+"""
+    const AbstractRadLinearFilterInstance = AbstractRadSigFilterInstance{LinearFiltering}
+
+Convenience type alias, abstract linear filter instance.
+"""
+const AbstractRadLinearFilterInstance = AbstractRadSigFilterInstance{LinearFiltering}
+export AbstractRadLinearFilterInstance
+
+
 
 # ToDo: RadLinearFilterChain and RadLinearFilterChainInstance
 
 
 
 """
-    FilterLinearMap{T} <: LinearMaps.LinearMap{T}
+    struct FilterLinearMap{T} <: LinearMaps.LinearMap{T}
 
 Representation of a linear filter as a `LinearMaps.LinearMap`.
 
 Constructors:
 
-* ```$(FUNCTIONNAME){T<:RealQuantity}(flt::AbstractRadLinearFilter, time::Range)```
-
-Fields:
-
-$(TYPEDFIELDS)
+* ```$(FUNCTIONNAME){T<:RealQuantity}(flt::AbstractRadLinearFilterInstance)```
 """
 struct FilterLinearMap{
     T <: RealQuantity,
-    F <: AbstractRadLinearFilter,
+    F <: AbstractRadLinearFilterInstance,
     R <: Range
 } <: LinearMaps.LinearMap{T}
-    "filter"
     flt::F
-
-    "time axis"
-    time::R
 end
 
 
 
-function FilterLinearMap{T}(flt::AbstractRadLinearFilter, time::Range) where {T<:RealQuantity}
+function FilterLinearMap{T}(flt::AbstractRadLinearFilterInstance) where {T<:RealQuantity}
     FilterLinearMap{T,typeof(flt),typeof(time)}(flt, time)
 end
 
